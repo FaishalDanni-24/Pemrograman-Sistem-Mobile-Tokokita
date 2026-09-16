@@ -287,9 +287,8 @@ class DiscountedProduct extends Product {
 }
 
 
-// Dummy Product
-// Dummy data untuk percobaan
-  List<Product> dummyProducts = [
+// Dummy Product untuk percobaan
+List<Product> dummyProducts = [
   Product(
     id: 1,
     name: 'Smartphone Android X',
