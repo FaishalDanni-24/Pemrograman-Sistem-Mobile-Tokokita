@@ -262,7 +262,33 @@ double hitungTotalBelanja(List<Product> keranjang) {
 }
 
 
-  // Dummy data untuk percobaan
+  
+}
+
+// Inheritance: DiscountedProduct
+class DiscountedProduct extends Product {
+  final double discountPercent;
+
+  DiscountedProduct({
+    required super.id,
+    required super.name,
+    required super.price,
+    required super.imageUrl,
+    required super.category,
+    required super.stock,
+    super.description,
+    required this.discountPercent,
+  });
+
+  // Method menghitung harga final setelah diskon
+  double get finalPrice {
+    return price - (price * (discountPercent / 100));
+  }
+}
+
+
+// Dummy Product
+// Dummy data untuk percobaan
   List<Product> dummyProducts = [
   Product(
     id: 1,
@@ -334,25 +360,3 @@ double hitungTotalBelanja(List<Product> keranjang) {
     stock: 0,
   ),
 ];
-}
-
-// Inheritance: DiscountedProduct
-class DiscountedProduct extends Product {
-  final double discountPercent;
-
-  DiscountedProduct({
-    required super.id,
-    required super.name,
-    required super.price,
-    required super.imageUrl,
-    required super.category,
-    required super.stock,
-    super.description,
-    required this.discountPercent,
-  });
-
-  // Method menghitung harga final setelah diskon
-  double get finalPrice {
-    return price - (price * (discountPercent / 100));
-  }
-}
