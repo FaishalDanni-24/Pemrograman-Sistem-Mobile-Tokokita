@@ -212,6 +212,7 @@ void main() {
   // );
 }
 
+
 // Class Product & Null Safety (Class di bawah ini yang akan digunakan)
 class Product {
   final int id;
@@ -253,16 +254,13 @@ class Product {
   }
 
   // Function untuk total belanja produk
-double hitungTotalBelanja(List<Product> keranjang) {
-  double total = 0.0;
-  for (var produk in keranjang) {
-    total += produk.price;
+  double hitungTotalBelanja(List<Product> keranjang) {
+    double total = 0.0;
+    for (var produk in keranjang) {
+      total += produk.price;
+    }
+    return total;
   }
-  return total;
-}
-
-
-  
 }
 
 // Inheritance: DiscountedProduct
