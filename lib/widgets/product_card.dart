@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:tokokita/models/product.dart';
 
-class ProductCart extends StatelessWidget {
+// ProductCard (Stateless)
+class ProductCard extends StatelessWidget {
   final Product product;
 
-  const ProductCart({
+  const ProductCard({
     super.key,
     required this.product
   });
@@ -66,3 +67,8 @@ class ProductCart extends StatelessWidget {
     );
   }
 }
+
+// class ProductCard extends StatefulWidget {
+
+// }
+

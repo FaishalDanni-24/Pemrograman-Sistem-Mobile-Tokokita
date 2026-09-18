@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'models/product.dart';
-import 'widgets/product_cart.dart';
+import 'widgets/product_card.dart';
 
 void main() {
   runApp(const MyApp());
@@ -26,11 +26,11 @@ class MyApp extends StatelessWidget {
           child: Column(
             spacing: 1.0,
             children: [
-              ProductCart(product: products[0]), 
-              ProductCart(product: products[1]),
-              ProductCart(product: products[2]),
-              ProductCart(product: products[3]),
-              ProductCart(product: products[4]),
+              ProductCard(product: products[0]), 
+              ProductCard(product: products[1]),
+              ProductCard(product: products[2]),
+              ProductCard(product: products[3]),
+              ProductCard(product: products[4]),
             ],
           )
         ),
