@@ -31,8 +31,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   bool showCard = true;
 
-  final products = dummyProducts;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,22 +38,11 @@ class _HomePageState extends State<HomePage> {
         title: const Text('TokoKita'),
         backgroundColor: Colors.blueAccent,
       ),
-      body: Column(
-        children: [
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              setState(() {
-                showCard = !showCard;
-              });
-            },
-            child: Text(
-              showCard ? 'Sembunyikan Kartu (Uji dispose)' : 'Tampilkan Kartu',
-            ),
-          ),
-          const SizedBox(height: 20),
-          if (showCard) ProductCard(product: products[0]),
-        ],
+      body: ListView.builder(
+        itemCount: dummyProducts.length,
+        itemBuilder: (context, index) {
+          return ProductCard(product: dummyProducts[index]);
+        },
       ),
     );
   }
