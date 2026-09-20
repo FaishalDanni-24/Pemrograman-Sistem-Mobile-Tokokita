@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:tokokita/models/product.dart';
+import '../models/product.dart';
+import 'price_label.dart';
+import 'stock_badge.dart';
+import 'category_tag.dart';
 
 // ProductCard (Stateless)
 // class ProductCard extends StatelessWidget {
@@ -129,11 +132,14 @@ class _ProductCardState extends State<ProductCard> {
             ),
             const SizedBox(width: 16),
             
-            // Detail Produk (Nama & Harga)
+            // Detail Produk (Nama, Badge Stok, & Harga)
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Penggunaan Widget Custom Baru CategoryTag
+                  CategoryTag(category: widget.product.category),
+                  const SizedBox(height: 4),
                   Text(
                     widget.product.name,
                     style: const TextStyle(
@@ -141,15 +147,15 @@ class _ProductCardState extends State<ProductCard> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                  const SizedBox(height: 6),
+                  
+                  // Penggunaan StockBadge
+                  StockBadge(statusStok: widget.product.getStatusStok()),
+                  
                   const SizedBox(height: 8),
-                  Text(
-                    'Rp ${widget.product.price.toStringAsFixed(0)}',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.green,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  
+                  // Penggunaan PriceLabel
+                  PriceLabel(price: widget.product.price),
                 ],
               ),
             ),
