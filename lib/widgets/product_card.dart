@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+
+import 'package:tokokita/screens/product_detail_page.dart';
 import '../models/product.dart';
+import 'discount_badge.dart';
 import 'price_label.dart';
 import 'stock_badge.dart';
 import 'category_tag.dart';
@@ -74,10 +77,7 @@ import 'category_tag.dart';
 class ProductCard extends StatefulWidget {
   final Product product;
 
-  const ProductCard({
-    super.key,
-    required this.product,
-  });
+  const ProductCard({super.key, required this.product});
 
   @override
   State<ProductCard> createState() => _ProductCardState();
@@ -91,13 +91,17 @@ class _ProductCardState extends State<ProductCard> {
   void initState() {
     super.initState();
     // Lifecycle: initState dipanggil sekali saat Widget State dibuat
-    print('--> [initState] ProductCard dibuat untuk produk: ${widget.product.name}');
+    print(
+      '--> [initState] ProductCard dibuat untuk produk: ${widget.product.name}',
+    );
   }
 
   @override
   void dispose() {
     // Lifecycle: dispose dipanggil saat Widget dihapus dari Widget Tree
-    print('<-- [dispose] ProductCard dihapus dari tree untuk produk: ${widget.product.name}');
+    print(
+      '<-- [dispose] ProductCard dihapus dari tree untuk produk: ${widget.product.name}',
+    );
     super.dispose();
   }
 
@@ -108,124 +112,136 @@ class _ProductCardState extends State<ProductCard> {
     // Memeriksa apakah produk merupakan produk diskon
     final bool isDiscounted = widget.product is DiscountedProduct;
 
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.3),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Stack(
-            children: [
-              Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Icon(
-                  Icons.shopping_bag,
-                  size: 40,
-                  color: Colors.grey,
-                ),
-              ),
+    return InkWell(
+      onTap: () async {
+        final result = await Navigator.pushNamed(
+          context,
+          '/detail',
+          arguments: widget.product,
+        );
 
-              // Badge diskon
-              if (isDiscounted)
+        if (result != null && context.mounted) {
+          // Point 3.3: Menampilkan SnackBar respon
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('$result item "${widget.product.name}" berhasil ditambahkan ke keranjang!'),
+              duration: const Duration(seconds: 2),
+            ),
+          );
+        }
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Stack(
+              children: [
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(
+                    Icons.shopping_bag,
+                    size: 40,
+                    color: Colors.grey,
+                  ),
+                ),
+
+                // Badge diskon
+                if (isDiscounted)
+                  Positioned(
+                    top: 4,
+                    right: 4,
+                    child: DiscountBadge()
+                  ),
                 Positioned(
-                  top: 4,
-                  right: 4,
+                  bottom: 4,
+                  left: 4,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
                     decoration: BoxDecoration(
-                      color: Colors.red,
+                      color: widget.product.stock > 0
+                          ? Colors.blue
+                          : Colors.grey,
                       borderRadius: BorderRadius.circular(4),
                     ),
-                    child: const Text(
-                      'Diskon',
-                      style: TextStyle(
+                    child: Text(
+                      widget.product.stock > 0
+                          ? 'Stok: ${widget.product.stock}'
+                          : 'Habis',
+                      style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 9,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
                 ),
-              Positioned(
-                bottom: 4,
-                left: 4,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: widget.product.stock > 0 ? Colors.blue : Colors.grey,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    widget.product.stock > 0 ? 'Stok: ${widget.product.stock}' : 'Habis',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 9,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-
-          // Detail Produk (Nama, Badge Stok, & Harga)
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Penggunaan Widget Custom Baru CategoryTag
-                CategoryTag(category: widget.product.category),
-                const SizedBox(height: 4),
-                Text(
-                  widget.product.name,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-
-                const SizedBox(height: 6),
-                // Penggunaan StockBadge
-                StockBadge(statusStok: widget.product.getStatusStok()),
-                
-                const SizedBox(height: 8),          
-                // Penggunaan PriceLabel
-                PriceLabel(price: widget.product.price),
               ],
             ),
-          ),
 
-          // Tombol Favorit (Love/Star)
-          IconButton(
-            icon: Icon(
-              isFavorite ? Icons.favorite : Icons.favorite_border,
-              color: isFavorite ? Colors.red : Colors.grey,
+            // Detail Produk (Nama, Badge Stok, & Harga)
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Penggunaan Widget Custom Baru CategoryTag
+                  CategoryTag(category: widget.product.category),
+                  const SizedBox(height: 4),
+                  Text(
+                    widget.product.name,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+
+                  const SizedBox(height: 6),
+                  // Penggunaan StockBadge
+                  StockBadge(statusStok: widget.product.getStatusStok()),
+
+                  const SizedBox(height: 8),
+                  // Penggunaan PriceLabel
+                  PriceLabel(price: widget.product.price),
+                ],
+              ),
             ),
-            onPressed: () {
-              setState(() {
-                isFavorite = !isFavorite;
-              });
-            },
-          ),
-        ],
+
+            // Tombol Favorit (Love/Star)
+            IconButton(
+              icon: Icon(
+                isFavorite ? Icons.favorite : Icons.favorite_border,
+                color: isFavorite ? Colors.red : Colors.grey,
+              ),
+              onPressed: () {
+                setState(() {
+                  isFavorite = !isFavorite;
+                });
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
