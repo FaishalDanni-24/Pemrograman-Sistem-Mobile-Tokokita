@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:tokokita/screens/product_detail_page.dart';
 import '../models/product.dart';
 import 'discount_badge.dart';
 import 'price_label.dart';
@@ -121,7 +120,6 @@ class _ProductCardState extends State<ProductCard> {
         );
 
         if (result != null && context.mounted) {
-          // Point 3.3: Menampilkan SnackBar respon
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('$result item "${widget.product.name}" berhasil ditambahkan ke keranjang!'),

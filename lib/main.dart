@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tokokita/screens/main_page.dart';
 
-import 'screens/home_page.dart';
 import 'screens/product_detail_page.dart';
 import 'models/product.dart';
 
