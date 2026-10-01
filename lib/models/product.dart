@@ -364,6 +364,7 @@ List<Product> dummyProducts = [
     category: 'Hiburan',
     stock: 3,
     discountPercent: 50,
+    description: 'Dongeng penuh dengan pesan yang membantu anak berkembang',
   ),
   DiscountedProduct(
     id: 10,
@@ -373,6 +374,7 @@ List<Product> dummyProducts = [
     category: 'Kesehatan',
     stock: 16,
     discountPercent: 10,
+    description: 'Obat sakit kepala, harap cek dengan dokter anda.',
   ),
   DiscountedProduct(
     id: 11,
@@ -382,6 +384,7 @@ List<Product> dummyProducts = [
     category: 'Elektronik',
     stock: 47,
     discountPercent: 5,
+    description: 'Kabel jumper untuk peminat alat elektronik',
   ),
   DiscountedProduct(
     id: 12,
@@ -400,6 +403,7 @@ List<Product> dummyProducts = [
     category: 'Furniture',
     stock: 14,
     discountPercent: 50,
+    description: 'Kursi untuk tempat perkantoran. Bisa menahan beban 100 kg.',
   ),
   DiscountedProduct(
     id: 14,
@@ -418,5 +422,6 @@ List<Product> dummyProducts = [
     category: 'Elektronik',
     stock: 0,
     discountPercent: 5,
+    description: 'Baterai cadangan untuk model Laptop Slim Pro 14. Kapasitas sesuai dengan spesifikasi pabrik.',
   ),
 ];
