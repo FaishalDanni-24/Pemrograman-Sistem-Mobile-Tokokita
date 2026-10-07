@@ -1,25 +1,55 @@
 import 'package:get/get.dart';
+
 import '../models/product.dart';
 
+class CartItem {
+  final Product product;
+  RxInt quantity;
+
+  CartItem({required this.product, required int quantity})
+      : quantity = quantity.obs;
+}
+
 class CartController extends GetxController {
-  // Variabel reaktif untuk menyimpan daftar item keranjang
-  var cartItems = <Product>[].obs;
+  var cartItems = <CartItem>[].obs;
 
-  // Menambahkan produk ke keranjang
-  void addToCart(Product product) {
-    cartItems.add(product);
+  void addToCart(Product product, {int count = 1}) {
+    int index = cartItems.indexWhere((item) => item.product.id == product.id);
+    if (index != -1) {
+      cartItems[index].quantity.value += count;
+    } else {
+      cartItems.add(CartItem(product: product, quantity: count));
+    }
   }
 
-  // Menghapus produk dari keranjang
-  void removeFromCart(Product product) {
-    cartItems.remove(product);
+  void incrementQuantity(CartItem item) {
+    item.quantity.value++;
+    cartItems.refresh(); // Memicu pembaruan getter reaktif
   }
 
-  // Getter reaktif menghitung total item
-  int get totalItem => cartItems.length;
+  void decrementQuantity(CartItem item) {
+    if (item.quantity.value > 1) {
+      item.quantity.value--;
+      cartItems.refresh();
+    } else {
+      removeFromCart(item);
+    }
+  }
 
-  // Getter reaktif menghitung total harga
+  void removeFromCart(CartItem item) {
+    cartItems.remove(item);
+  }
+
+  int get totalItem {
+    return cartItems.fold(0, (sum, item) => sum + item.quantity.value);
+  }
+
   double get totalHarga {
-    return cartItems.fold(0, (sum, item) => sum + item.price);
+    return cartItems.fold(
+        0, (sum, item) => sum + (item.product.price * item.quantity.value));
+  }
+
+  void clearCart() {
+    cartItems.clear();
   }
 }
