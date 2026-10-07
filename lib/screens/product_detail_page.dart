@@ -1,11 +1,13 @@
 // lib/screens/product_detail_page.dart
 import 'package:flutter/material.dart';
-import 'package:tokokita/widgets/discount_badge.dart';
+import 'package:get/get.dart';
 
 import '../models/product.dart';
 import '../widgets/price_label.dart';
 import '../widgets/stock_badge.dart';
 import '../widgets/category_tag.dart';
+import '../widgets/discount_badge.dart';
+import '../controllers/cart_controller.dart';
 
 class ProductDetailPage extends StatefulWidget {
   final Product product;
@@ -38,15 +40,15 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   @override
   Widget build(BuildContext context) {
     final bool isDiscounted = widget.product is DiscountedProduct;
+    final CartController cartController = Get.find<CartController>();
 
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.product.name),
-        // Point 1.4: Tombol back default Flutter dipanggil secara otomatis, 
-        // namun kita juga bisa membuat perilaku kustom menggunakan Navigator.pop
+        // Kita juga bisa membuat perilaku kustom menggunakan Navigator.pop
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Get.back(),
         ),
       ),
       body: SingleChildScrollView(
@@ -161,10 +163,17 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             padding: const EdgeInsets.symmetric(vertical: 14),
           ),
           onPressed: widget.product.stock > 0 ? () {
-            Navigator.pop(context, quantity);
+            for (int i = 0; i < quantity; i++) {
+              cartController.addToCart(widget.product);
+            }
+            Get.snackbar(
+              'Sukses',
+              '${widget.product.name} berhasil ditambahkan ke keranjang',
+              snackPosition: SnackPosition.BOTTOM,
+            );
           }
           : null,
-          child: const Text('Tambah ke Keranjang', style: TextStyle(fontSize: 16)),
+          child: Text(widget.product.stock > 0 ? 'Tambah ke Keranjang ($quantity)' : 'Stok Habis'),
         ),
       ),
     );

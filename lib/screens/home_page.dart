@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../models/product.dart';
 import '../widgets/product_card.dart';
+import '../controllers/cart_controller.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -11,7 +13,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  bool showCard = true;
+  //bool showCard = true;
+  final CartController cartController = Get.find<CartController>();
 
   @override
   Widget build(BuildContext context) {
@@ -43,10 +46,31 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ],
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.shopping_cart),
-                    onPressed: () {},
+                  ), 
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                        IconButton(
+                        icon: const Icon(Icons.shopping_cart),
+                        onPressed: () {},
+                      ),
+                      Positioned(
+                        right: 8,
+                        top: 0,
+                        child: Obx(
+                          () => cartController.totalItem > 0
+                              ? CircleAvatar(
+                                  radius: 9,
+                                  backgroundColor: Colors.red,
+                                  child: Text(
+                                    '${cartController.totalItem}',
+                                    style: const TextStyle(fontSize: 10, color: Colors.white),
+                                  ),
+                                )
+                              : const SizedBox.shrink(),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

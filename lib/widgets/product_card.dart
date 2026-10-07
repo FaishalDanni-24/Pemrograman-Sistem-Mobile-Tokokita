@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
+import '../screens/product_detail_page.dart';
 import '../models/product.dart';
+
 import 'discount_badge.dart';
 import 'price_label.dart';
 import 'stock_badge.dart';
@@ -113,11 +116,7 @@ class _ProductCardState extends State<ProductCard> {
 
     return InkWell(
       onTap: () async {
-        final result = await Navigator.pushNamed(
-          context,
-          '/detail',
-          arguments: widget.product,
-        );
+        final result = await Get.to(() => ProductDetailPage(product: widget.product));
 
         if (result != null && context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
