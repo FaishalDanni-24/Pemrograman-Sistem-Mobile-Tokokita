@@ -24,7 +24,6 @@ double hitungHargaSetelahDiskon(double harga, {double persenDiskon = 0.0}) {
 // Arrow Function
 String formatRupiah(double harga) => 'Rp ${harga.toStringAsFixed(0)}';
 
-
 // Fungsi main (hanya terjalan saat run langsung di kode ini)
 void main() {
   // Variabel dan Tipe Data
@@ -212,7 +211,6 @@ void main() {
   // );
 }
 
-
 // Class Product & Null Safety (Class di bawah ini yang akan digunakan)
 class Product {
   final int id;
@@ -261,6 +259,19 @@ class Product {
     }
     return total;
   }
+
+  // Factory constructor untuk parsing JSON dari API
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
+      id: json['id'],
+      name: json['title'] ?? '',
+      price: (json['price'] as num).toDouble() * 18000,
+      imageUrl: json['image'] ?? '',
+      category: json['category'] ?? '',
+      stock: 20, // Karena Fake Store API tidak menyediakan field stok, kita beri nilai default
+      description: json['description'],
+    );
+  }
 }
 
 // Inheritance: DiscountedProduct
@@ -283,7 +294,6 @@ class DiscountedProduct extends Product {
     return price - (price * (discountPercent / 100));
   }
 }
-
 
 // Dummy Product untuk percobaan
 List<Product> dummyProducts = [
