@@ -26,4 +26,15 @@ class ProductService {
       );
     }
   }
+
+  Future<Product> fetchProductDetail(int id) async {
+  final response = await http.get(Uri.parse('$baseUrl/$id'));
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> jsonBody = jsonDecode(response.body);
+      return Product.fromJson(jsonBody);
+    } else {
+      throw Exception('Gagal memuat detail produk (Code: ${response.statusCode})');
+    }
+  }
 }

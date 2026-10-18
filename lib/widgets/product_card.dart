@@ -152,11 +152,11 @@ class _ProductCardState extends State<ProductCard> {
                     color: Colors.grey[200],
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(
-                    Icons.shopping_bag,
-                    size: 40,
-                    color: Colors.grey,
-                  ),
+                  child: Image.network(
+                    widget.product.imageUrl,
+                    width: 20,
+                    height: 20,
+                  )
                 ),
 
                 // Badge diskon

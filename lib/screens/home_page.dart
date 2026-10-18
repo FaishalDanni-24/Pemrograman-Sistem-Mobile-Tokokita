@@ -93,13 +93,22 @@ class _HomePageState extends State<HomePage> {
           // Kondisi Sukses Menampilkan Data
           else {
             final products = snapshot.data!;
-            return ListView.builder(
-              itemCount: products.length,
-              itemBuilder: (context, index) {
-                final product = products[index];
-                // Menggunakan ProductCard yang sudah ada tanpa mengubah kodenya
-                return ProductCard(product: product);
+            return RefreshIndicator(
+              onRefresh: () async {
+                setState(() {
+                  futureProducts = productService.fetchProducts();
+                });
+                // Menunggu proses fetch selesai agar animasi loading berputar dengan benar
+                await futureProducts;
               },
+              child: ListView.builder(
+                itemCount: products.length,
+                itemBuilder: (context, index) {
+                  final product = products[index];
+                  // Menggunakan ProductCard yang sudah ada tanpa mengubah kodenya
+                  return ProductCard(product: product);
+                },
+              ),
             );
           }
         },
