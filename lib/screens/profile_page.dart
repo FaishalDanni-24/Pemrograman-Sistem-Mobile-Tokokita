@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'wishlist_page.dart';
 
 class ProfilePagePlaceholder extends StatelessWidget {
   const ProfilePagePlaceholder({super.key});
@@ -25,6 +26,17 @@ class ProfilePagePlaceholder extends StatelessWidget {
             const Text(
               'Silakan masuk atau daftar untuk mengelola akun Anda.',
               style: TextStyle(color: Colors.grey),
+            ),
+            ListTile(
+              leading: const Icon(Icons.favorite),
+              title: const Text('Wishlist'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const WishlistPage()),
+                );
+              },
             ),
           ],
         ),

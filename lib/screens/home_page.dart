@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/product.dart';
-import '../services/product_services.dart';
+import '../services/product_service.dart';
 import '../widgets/product_card.dart';
 import '../controllers/cart_controller.dart';
 
@@ -18,12 +19,14 @@ class _HomePageState extends State<HomePage> {
   late Future<List<Product>> futureProducts;
   final ProductService productService = ProductService();
   final CartController cartController = Get.find<CartController>();
+  List<String> _favoriteIds = [];
 
-  // Saat buat Widget Home Page
-  @override
-  void initState(){
-    super.initState();
-    futureProducts = productService.fetchProducts();
+  // Memuat daftar ID favorit dari SharedPreferences saat halaman dibuka
+  Future<void> _loadFavorites() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _favoriteIds = prefs.getStringList('favorite_ids') ?? [];
+    });
   }
 
   // Fungsi untuk memuat ulang data saat tombol 'Coba Lagi' ditekan
@@ -31,6 +34,14 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       futureProducts = productService.fetchProducts();
     });
+  }
+
+  // Saat buat Widget Home Page
+  @override
+  void initState(){
+    super.initState();
+    futureProducts = productService.fetchProducts();
+    _loadFavorites();
   }
   
   @override
@@ -105,8 +116,13 @@ class _HomePageState extends State<HomePage> {
                 itemCount: products.length,
                 itemBuilder: (context, index) {
                   final product = products[index];
+                  final isFav = _favoriteIds.contains(product.id.toString());
                   // Menggunakan ProductCard yang sudah ada tanpa mengubah kodenya
-                  return ProductCard(product: product);
+                  return ProductCard(
+                    product: product,
+                    isFavorite: isFav,
+                    onFavoriteChanged: _loadFavorites,
+                  );
                 },
               ),
             );

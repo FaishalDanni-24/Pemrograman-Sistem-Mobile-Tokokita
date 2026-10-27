@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../screens/product_detail_page.dart';
 import '../models/product.dart';
@@ -78,24 +79,59 @@ import 'category_tag.dart';
 
 class ProductCard extends StatefulWidget {
   final Product product;
+  final bool isFavorite;
+  final VoidCallback? onFavoriteChanged;
 
-  const ProductCard({super.key, required this.product});
+  const ProductCard({
+    super.key,
+    required this.product,
+    required this.isFavorite,
+    this.onFavoriteChanged,
+  });
 
   @override
   State<ProductCard> createState() => _ProductCardState();
 }
 
 class _ProductCardState extends State<ProductCard> {
-  // State lokal untuk menyimpan status favorit
-  bool isFavorite = false;
+  // State wishlist
+  bool _isFavorite = false;
 
   @override
   void initState() {
     super.initState();
-    // Lifecycle: initState dipanggil sekali saat Widget State dibuat
-    print(
-      '--> [initState] ProductCard dibuat untuk produk: ${widget.product.name}',
-    );
+    _checkFavoriteStatus();
+  }
+
+  // Memeriksa apakah ID produk ada di SharedPreferences saat card dimuat
+  Future<void> _checkFavoriteStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    final favoriteIds = prefs.getStringList('favorite_ids') ?? [];
+    setState(() {
+      _isFavorite = favoriteIds.contains(widget.product.id.toString());
+    });
+  }
+
+  // Toggle status favorit dan simpan ke SharedPreferences
+  Future<void> _toggleFavorite() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> favoriteIds = prefs.getStringList('favorite_ids') ?? [];
+    String idStr = widget.product.id.toString();
+
+    setState(() {
+      if (_isFavorite) {
+        favoriteIds.remove(idStr);
+        _isFavorite = false;
+      } else {
+        favoriteIds.add(idStr);
+        _isFavorite = true;
+      }
+    });
+
+    await prefs.setStringList('favorite_ids', favoriteIds);
+    if (widget.onFavoriteChanged != null) {
+      widget.onFavoriteChanged!();
+    }
   }
 
   @override
@@ -110,18 +146,24 @@ class _ProductCardState extends State<ProductCard> {
   @override
   Widget build(BuildContext context) {
     // Lifecycle: build dipanggil saat awal rendernya widget & setiap kali setState() dipanggil
-    print('==> [build] ProductCard dipanggil (isFavorite: $isFavorite)');
+    print(
+      '==> [build] ProductCard dipanggil (isFavorite: ${widget.isFavorite}',
+    );
     // Memeriksa apakah produk merupakan produk diskon
     final bool isDiscounted = widget.product is DiscountedProduct;
 
     return InkWell(
       onTap: () async {
-        final result = await Get.to(() => ProductDetailPage(product: widget.product));
+        final result = await Get.to(
+          () => ProductDetailPage(product: widget.product),
+        );
 
         if (result != null && context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('$result item "${widget.product.name}" berhasil ditambahkan ke keranjang!'),
+              content: Text(
+                '$result item "${widget.product.name}" berhasil ditambahkan ke keranjang!',
+              ),
               duration: const Duration(seconds: 2),
             ),
           );
@@ -156,16 +198,12 @@ class _ProductCardState extends State<ProductCard> {
                     widget.product.imageUrl,
                     width: 20,
                     height: 20,
-                  )
+                  ),
                 ),
 
                 // Badge diskon
                 if (isDiscounted)
-                  Positioned(
-                    top: 4,
-                    right: 4,
-                    child: DiscountBadge()
-                  ),
+                  Positioned(top: 4, right: 4, child: DiscountBadge()),
                 Positioned(
                   bottom: 4,
                   left: 4,
@@ -228,14 +266,10 @@ class _ProductCardState extends State<ProductCard> {
             // Tombol Favorit (Love/Star)
             IconButton(
               icon: Icon(
-                isFavorite ? Icons.favorite : Icons.favorite_border,
-                color: isFavorite ? Colors.red : Colors.grey,
+                widget.isFavorite ? Icons.favorite : Icons.favorite_border,
+                color: widget.isFavorite ? Colors.red : Colors.grey,
               ),
-              onPressed: () {
-                setState(() {
-                  isFavorite = !isFavorite;
-                });
-              },
+              onPressed: _toggleFavorite,
             ),
           ],
         ),

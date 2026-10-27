@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 
 import '../models/product.dart';
 import '../controllers/cart_controller.dart';
-import '../services/product_services.dart';
+import '../services/product_service.dart';
 import '../widgets/price_label.dart';
 import '../widgets/stock_badge.dart';
 import '../widgets/category_tag.dart';
