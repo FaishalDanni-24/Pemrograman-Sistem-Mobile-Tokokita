@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tokokita/screens/order_history_page.dart';
 import 'wishlist_page.dart';
 
 class ProfilePagePlaceholder extends StatelessWidget {
@@ -35,6 +36,17 @@ class ProfilePagePlaceholder extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const WishlistPage()),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.history),
+              title: const Text('Pesanan'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const OrderHistoryPage()),
                 );
               },
             ),

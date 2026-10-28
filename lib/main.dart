@@ -4,8 +4,12 @@ import 'package:get/get.dart';
 import 'screens/main_page.dart';
 import 'screens/product_detail_page.dart';
 import 'models/product.dart';
+import 'services/order_database.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // Verifikasi inisialisasi SQLite
+  await OrderDatabase.instance.database;
   runApp(const MyApp());
 }
 

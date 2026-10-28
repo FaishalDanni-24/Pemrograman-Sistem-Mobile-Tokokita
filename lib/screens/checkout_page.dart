@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import '../controllers/cart_controller.dart';
 
 class CheckoutPage extends StatelessWidget {
@@ -10,9 +11,7 @@ class CheckoutPage extends StatelessWidget {
     final CartController cartController = Get.find<CartController>();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Ringkasan Checkout'),
-      ),
+      appBar: AppBar(title: const Text('Ringkasan Checkout')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -30,8 +29,12 @@ class CheckoutPage extends StatelessWidget {
                   final item = cartController.cartItems[index];
                   return ListTile(
                     title: Text(item.product.name),
-                    subtitle: Text('Qty: ${item.quantity.value} x Rp ${item.product.price}'),
-                    trailing: Text('Rp ${item.product.price * item.quantity.value}'),
+                    subtitle: Text(
+                      'Qty: ${item.quantity.value} x Rp ${item.product.price}',
+                    ),
+                    trailing: Text(
+                      'Rp ${item.product.price * item.quantity.value}',
+                    ),
                   );
                 },
               ),
@@ -40,10 +43,17 @@ class CheckoutPage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Total Pembayaran:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                const Text(
+                  'Total Pembayaran:',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
                 Text(
                   'Rp ${cartController.totalHarga}',
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue),
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue,
+                  ),
                 ),
               ],
             ),
@@ -52,13 +62,13 @@ class CheckoutPage extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  cartController.clearCart();
+                  cartController.checkoutCart();
                   Get.snackbar('Sukses', 'Pesanan Anda berhasil diproses!');
                   Get.offAllNamed('/'); // Kembali setelah pesanan diproses
                 },
                 child: const Text('Bayar Sekarang'),
               ),
-            )
+            ),
           ],
         ),
       ),

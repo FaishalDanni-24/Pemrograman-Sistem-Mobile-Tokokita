@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 import '../models/product.dart';
+import '../services/order_database.dart';
 
 class CartItem {
   final Product product;
@@ -44,12 +45,37 @@ class CartController extends GetxController {
     return cartItems.fold(0, (sum, item) => sum + item.quantity.value);
   }
 
+  // Menghitung total harga belanja
   double get totalHarga {
     return cartItems.fold(
         0, (sum, item) => sum + (item.product.price * item.quantity.value));
   }
 
+  // Membersihkan keranjang
   void clearCart() {
     cartItems.clear();
+  }
+
+  // Alur Checkout
+  Future<bool> checkoutCart() async {
+    if (cartItems.isEmpty) return false;
+
+    // Gabungkan nama item untuk ringkasan daftarItem
+    String daftarItemString = cartItems
+        .map((item) => "${item.product.name} (${item.quantity}x)")
+        .join(', ');
+
+    // 1. Simpan pesanan baru ke SQLite
+    await OrderDatabase.instance.insertOrder({
+      'tanggal': DateTime.now().toIso8601String(),
+      'daftarItem': daftarItemString,
+      'totalHarga': totalHarga,
+      'status': 'Diproses',
+    });
+
+    // 2. Kosongkan keranjang
+    cartItems.clear();
+    
+    return true;
   }
 }
